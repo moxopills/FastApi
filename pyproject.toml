@@ -16,6 +16,8 @@ black = "24.10.0"
 ruff = "0.8.2"
 mypy = "1.13.0"
 pytest = "8.3.4"
+coverage = "7.6.9"
+pytest-asyncio = "0.25.0"
 
 [build-system]
 requires = ["poetry-core"]
@@ -27,3 +29,10 @@ line-length = 100
 [tool.mypy]
 plugins = ["pydantic.mypy"]
 strict = true
+
+[tool.coverage.run]
+omit = ["*/test_*.py"]
+
+[tool.pytest.ini.opstions]
+asyncio_mode = "aute"
+asyncio-default_fixture_loop_scope = "session"
