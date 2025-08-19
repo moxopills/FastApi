@@ -69,7 +69,7 @@ jobs:
 
       - name: Cache Poetry
         id: cache-poetry
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: poetry-1.8.5
           path: ~/.local/
@@ -84,7 +84,7 @@ jobs:
 
       - name: Cache dependencies
         id: cache-venv
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: python-${{ steps.setup-python.outputs.python-version }}-poetry-lock-${{ hashFiles('poetry.lock') }}-toml-${{ hashFiles('pyproject.toml') }}-poetry-1.8.5
           path: /home/runner/.cache/pypoetry/virtualenvs/
