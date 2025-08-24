@@ -3,7 +3,8 @@ from typing import Final
 
 
 class Base62:
-    BASE: Final[str] = string.ascii_letters + string.digits
+    # 더 일반적인 순서: 숫자 -> 소문자 -> 대문자
+    BASE: Final[str] = string.digits + string.ascii_lowercase + string.ascii_uppercase
     BASE_LEN: Final[int] = len(BASE)
 
     @classmethod
@@ -18,4 +19,4 @@ class Base62:
         while num:
             num, remainder = divmod(num, cls.BASE_LEN)
             result.append(cls.BASE[remainder])
-        return "".join(result)
+        return "".join(reversed(result))

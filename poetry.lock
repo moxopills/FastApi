@@ -561,6 +561,16 @@ files = [
 ]
 
 [[package]]
+name = "location"
+version = "0.0.7"
+description = "完善修复baidu接口"
+optional = false
+python-versions = "*"
+files = [
+    {file = "location-0.0.7.tar.gz", hash = "sha256:cc53afeb34d219ee86262f382d8299087e5001bd3c288cf2d875f432ee2cbba8"},
+]
+
+[[package]]
 name = "mypy"
 version = "1.13.0"
 description = "Optional static typing for Python"
@@ -1135,4 +1145,4 @@ standard = ["colorama (>=0.4)", "httptools (>=0.6.3)", "python-dotenv (>=0.13)",
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.13"
-content-hash = "35727188d2978131cf4f7362fbbd6b6b7ee5914c8106098c7a32cf9ae3f41c52"
+content-hash = "e919e2baf4a6afb1bec6710a78bf8d8385a07a9b9ce761f8879d81de4eb5268a"
