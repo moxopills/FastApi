@@ -16,7 +16,7 @@ class UpdateMeetingDateRangeRequest(BaseModel):
         return self.end_date - self.start_date >= MEETING_DATE_MAX_RANGE
 
 
-class UpadateMeetingTitleRequest(BaseModel):
+class UpdateMeetingTitleRequest(BaseModel):
     model_config = FROZEN_CONFIG
     title: str
 

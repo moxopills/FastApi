@@ -1,5 +1,9 @@
+
 import httpx
-from starlette.status import HTTP_200_OK, HTTP_404_NOT_FOUND
+from starlette.status import (
+    HTTP_204_NO_CONTENT,
+    HTTP_404_NOT_FOUND,
+)
 from tortoise.contrib.test import TestCase
 
 from app import app
@@ -7,42 +11,43 @@ from app.tortoise_models.meeting import MeetingModel
 
 
 class TestMeetingRouter(TestCase):
-    async def test_api_create_meeting_mysql(self) -> None:
-        # When
+    ...
+
+    async def test_api_update_meeting_title(self) -> None:
         async with httpx.AsyncClient(
-            transport=httpx.ASGITransport(app=app),
-            base_url="http://test",
+            transport=httpx.ASGITransport(app=app), base_url="http://test"
         ) as client:
-            response = await client.post(url="/v1/mysql/meetings")
+            create_meeting_response = await client.post(url="/v1/mysql/meetings")
+            url_code = create_meeting_response.json()["url_code"]
+            response = await client.patch(
+                f"/v1/mysql/meetings/{url_code}/title", json={"title": "abc"}
+            )
 
-        # Then: 테스트 결과를 검증
-        self.assertEqual(response.status_code, HTTP_200_OK)
-        url_code = response.json()["url_code"]
-        self.assertTrue(await MeetingModel.filter(url_code=url_code).exists())
+        assert response.status_code == HTTP_204_NO_CONTENT
+        meeting = await MeetingModel.get(url_code=url_code)
+        assert meeting.title == "abc"  # <-- 고침
 
-    async def test_api_get_meeting_mysql(self) -> None:
+    async def test_api_update_meeting_location(self) -> None:
         async with httpx.AsyncClient(
-            transport=httpx.ASGITransport(app=app),
-            base_url="http://test",
+            transport=httpx.ASGITransport(app=app), base_url="http://test"
         ) as client:
-            meeting_create_response = await client.post(url="/v1/mysql/meetings")
-            url_code = meeting_create_response.json()["url_code"]
+            create_meeting_response = await client.post(url="/v1/mysql/meetings")
+            url_code = create_meeting_response.json()["url_code"]
+            location = "test location"
 
-            response = await client.get(url=f"/v1/mysql/meetings/{url_code}")
+            response = await client.patch(
+                f"/v1/mysql/meetings/{url_code}/location", json={"location": location}
+            )
 
-        self.assertEqual(response.status_code, HTTP_200_OK)
-        response_body = response.json()
-        self.assertEqual(response_body["url_code"], url_code)
+        assert response.status_code == HTTP_204_NO_CONTENT
 
-    async def test_api_get_meeting_mysql_404(self) -> None:
+    async def test_can_not_update_meeting_location_when_meeting_does_not_exists(self) -> None:
         async with httpx.AsyncClient(
-            transport=httpx.ASGITransport(app=app),
-            base_url="http://test",
+            transport=httpx.ASGITransport(app=app), base_url="http://test"
         ) as client:
-            invalid_url_code = "invalid_url_code"
-            response = await client.get(f"/v1/mysql/meetings/{invalid_url_code}")
-        self.assertEqual(response.status_code, HTTP_404_NOT_FOUND)
-        response_body = response.json()
-        self.assertEqual(
-            response_body["detail"], "meeting with url_code: invalid_url_code not found"
-        )
+            url_code = "invalid_url_code"
+            response = await client.patch(
+                f"/v1/mysql/meetings/{url_code}/location",
+                json={"location": "abc"},
+            )
+        assert response.status_code == HTTP_404_NOT_FOUND
